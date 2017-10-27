@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name ="format-detection" content ="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TITLE</title>
+<link rel="stylesheet" type="text/css" href="../../css/common.css">
+</head>
+<body>
+<div id="wrap">	
+	
+</div>
+</body>
+<script type="text/javascript">
+class Guitar{
+	constructor(serialNumber, builder, model, type, backWood, topWood, price){
+		this._serialNumber = serialNumber;
+		this._builder = builder;
+		this._model = model;
+		this._type = type;
+		this._backWood = backWood;
+		this._topWood = topWood;
+		this._price = price;
+	}
+
+	getSerialNumber(){
+		return this._serialNumber;
+	}
+	getPrice(){
+		return this._price;
+	}
+	setPrice(newPrice){
+		this._price = newPrice;
+	}
+	getBuilder(){
+		return this._builder;
+	}
+	getModel(){
+		return this._model;
+	}
+	getType(){
+		return this._type;
+	}
+	getBackWood(){
+		return this.__backWood;
+	}
+	getTopWood(){
+		return this.__topWood;
+	}
+}
+
+class Inventory{
+	constructor(){
+		this.guitars = new LinkedList();
+	}
+	addGuitar(serialNumber, price, builder, model, type, backWood, topWood){
+		const guitar = new Guitar(serialNumber, price, builder, model, type, backWood, topWood);
+		this.guitars.add(guitar);
+	}
+	getGuitar(serialNumber){
+		const k = this.guitars.iterator();
+		for(let i = k.next(); !i.done; i = k.next()){
+			if(i.value.getSerialNumber() === serialNumber){
+				return i.value;
+			}			
+		}
+		return null;
+	}
+	search(searchGuitar){
+		const k = this.guitars.iterator();
+
+		for(let i = k.next().value; i; i= k.next().value){
+			let builder = searchGuitar.getBuilder();
+
+			if( (builder !== null) && (builder !== i.getBuilder() )) continue;
+			let model = searchGuitar.getModel();
+			if( (model !== null) && (model !== i.getModel()) ) continue;
+			
+			let type = searchGuitar.getType();
+			if( (type !== null) && (type !== i.getType()) ) continue;
+			
+			let backWood = searchGuitar.getBackWood();
+			if( (backWood !== null) && (backWood !== i.getBackWood()) ) continue;
+			
+			let topWood = searchGuitar.getTopWood();
+			if( (topWood !== null) && (topWood !== i.getTopWood()) ) continue;
+      
+      		return i;
+		}
+		return null;
+	}
+}
+
+class LinkedList{
+	constructor(){
+		this._head = null;
+		this._last = null;
+		this._length = 0;
+	}
+	add(value){
+		const n = new Node(value);
+		if(this._head === null && this._last === null){
+			this._head = n;
+			this._head.next = this._last;
+			this._last = n;
+		}else{
+			this._last.next = n;
+			this._last = n;
+		}
+		return this._length += 1;
+	}
+	clear(){
+		this._head = null;
+		this._last = null;
+		this._length = 0;
+	}
+	getAt(index){
+		let temp = this._head;
+		for(let i = 0; i < index; i++){
+			if(value === temp.value) return i;
+			temp = temp.next;
+		}
+		return -1;
+	}
+	pop(){
+		let temp = this._head;
+		for(let i = 0; i < this._length-1; i++){
+			if(i === this._length-2) this._last = temp;
+			temp = temp.next;
+		}
+		this._last.next = null;
+		this._length -= 1;
+		return temp;
+	}
+	remove(){
+		const temp = this._head;
+		this._head = this._head.next;
+		this._lengt -= 1;
+		temp.next = null;
+		return temp;
+	}
+	removeAt(index){
+		if(index === 0) return this.remove();
+
+		const temp = this.getAt(index-1),
+				tempNext = temp.next;
+		temp.next = tempNext.next;
+		tempNext.next = null;
+		return tempNext;
+	}
+	size(){
+		return this._length;
+	}
+	iterator(){
+		const len = this.size();
+		return (function*(){
+			for(let i = 0; i <len; i++){
+				yield this.getAt(i).value;
+			}
+		}.bind(this))();
+	}
+}
+
+class Node{
+	constructor(value){
+		this.value = value;
+		this.next = null;
+	}
+}
+
+var guitars = new Inventory();
+function init(target, num){
+	for(let i = 0; i < num; i++){
+		guitars.addGuitar(`00${i}`, i*10000, `builder${i}`, `model${i}`, `type${i}`, `backWood${i}`, `topWood${i}`);
+	}
+}
+
+init(guitars, 3);
+
+guitars.search(new Guitar("", "", "builder9","model9","type9", "backWood9", "topWood9"));
+
+guitars.addGuitar("V95693", 1499, "Fender", "Stratocastor", "electric", "Alder", "Alder");
+var a1 = new Guitar("", 0, "fender", "Stratocastor", "electric", "Alder", "Alder");
+
+console.log(guitars.search(a1));
+</script>
+</html>
