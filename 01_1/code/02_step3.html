@@ -14,6 +14,7 @@
 </div>
 </body>
 <script type="text/javascript">
+
 class Guitar{
 	constructor(serialNumber, price, builder, model, type, backWood, topWood){
 		this._serialNumber = serialNumber;
@@ -51,6 +52,15 @@ class Guitar{
 	}
 }
 
+//NEW = ENUM
+class Enum {
+    constructor(...values) {
+      const len = values.length;
+      for(let i = 0; i < len; ) this[values[i++]] = values[i++];
+      Object.freeze(this); // 얼려줘서 변경할수 없게 만든다.
+    }
+  }
+
 class Inventory{
 	constructor(){
 		this.guitars = [];
@@ -61,25 +71,24 @@ class Inventory{
 	}
 	getGuitar(serialNumber){
 		const k = this.guitars;
-		for(let i = k; i < k.length; i++){
-			if(i.getSerialNumber() === serialNumber){
-				return i;
+		for(let i = 0; i < k.length; i++){
+			if(k[i].getSerialNumber() === serialNumber){
+				return k[i];
 			}			
 		}
 		return null;
 	}
 	search(searchGuitar){
 		const k = this.guitars;
+        const matchingGuitars = [];
+
 		for(let i = 0; i < k.length; i++){
 
 			let builder = searchGuitar.getBuilder();
 			if( (builder !== null) && (builder !== k[i].getBuilder() )) continue;
 
-			console.log(builder);
 			let model = searchGuitar.getModel();
-			if( (model !== null) && (model !== k[i].getModel()) ) continue;
-
-		
+			if( (model !== null) && (model !== k[i].getModel()) ) continue;		
 			
 			let type = searchGuitar.getType();
 			if( (type !== null) && (type !== k[i].getType()) ) continue;
@@ -90,27 +99,36 @@ class Inventory{
 			let topWood = searchGuitar.getTopWood();
 			if( (topWood !== null) && (topWood !== k[i].getTopWood()) ) continue;
       
-      		return k[i];
+      		matchingGuitars.push(k[i]);
 		}
-		return null;
+		return matchingGuitars;
 	}
 }
 
+// Enum 변수생성
+const Type = new Enum('ACOUSTIC','acoustic','ELECTRIC','electric');
+const Builder = new Enum('FENDER','Fender','MARTIN','Martin','GIBSON','Gibson');
+const Wood = new Enum('INDIAN_ROSEWOOD','Indian Rosewood','BRAZILIAN_ROSEWOOD', 'Brazilian Rosewood','ALDER','Alder');
 
 var guitars = new Inventory();
-function init(target, num){
-	for(let i = 0; i < num; i++){
-		guitars.addGuitar(`00${i}`, i*10000, `builder${i}`, `model${i}`, `type${i}`, `backWood${i}`, `topWood${i}`);
-	}
-}
 
-init(guitars, 3);
+// 테스트 하기 위한 초기 데이터 입력
+guitars.addGuitar("V95", 1499, Builder.FENDER, "Stratocastor", Type.ELECTRIC, Wood.ALDER, Wood.ALDER, 12);
+guitars.addGuitar("V91", 1549, Builder.FENDER, "Stratocastor", Type.ELECTRIC, Wood.ALDER, Wood.ALDER, 13);
 
-//console.log(guitars.search(new Guitar("", "", "builder9","model9","type9", "backWood9", "topWood9")));
+// 고객이 원하는 기타 입력
+const whatLikes = new Guitar("",0,Builder.FENDER, "Stratocastor", Type.ELECTRIC, Wood.ALDER, Wood.ALDER, 14);
 
-guitars.addGuitar("V95693", 1499, "Fender", "Stratocastor", "electric", "Alder", "Alder");
-var a1 = new Guitar("", 0, "fender", "Stratocastor", "electric", "Alder", "Alder");
+// 검색
+const a1 = guitars.search(whatLikes);
 
-console.log(guitars.search(a1));
+// 검색 결과 출력
+a1.forEach(o=>{
+  console.log(`We have a ${o.getBuilder()} ${o.getModel()}  ${o.getType()} guitar`);
+  console.log(`\t${o.getBackWood()} back and sides,`);
+  console.log(`\t${o.getTopWood()} top.`);
+  console.log(`You can have it for only $${o.getPrice()}!!\n`);
+  console.log('====='.repeat(8));
+})
 </script>
 </html>
