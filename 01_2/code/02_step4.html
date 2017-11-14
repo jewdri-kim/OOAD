@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name ="format-detection" content ="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TITLE</title>
+<link rel="stylesheet" type="text/css" href="common.css">
+</head>
+<body>
+<div id="wrap">	
+	
+</div>
+</body>
+<script type="text/javascript">
+
+class Guitar{
+	constructor(serialNumber, price, spec){
+		this._serialNumber = serialNumber;
+		this._price = price;
+        this._guitarSpec = spec;
+	}
+
+	getSerialNumber(){
+		return this._serialNumber;
+	}
+	getPrice(){
+		return this._price;
+	}
+	setPrice(newPrice){
+		this._price = newPrice;
+	}
+    getSpec(){
+        return this._guitarSpec;
+    }
+}
+
+class GuitarSpec{
+    constructor(builder, model, type,numStrings, backWood, topWood){
+		this._builder = builder;
+		this._model = model;
+		this._type = type;
+		this._backWood = backWood;
+		this._topWood = topWood;
+        this._numStrings = numStrings; 
+    }
+    getBuilder(){
+		return this._builder;
+	}
+	getModel(){
+		return this._model;
+	}
+	getType(){
+		return this._type;
+	}
+	getBackWood(){
+		return this.__backWood;
+	}
+	getTopWood(){
+		return this.__topWood;
+	}
+    matches(otherSpec){
+        for(let i in this){
+            let prop = i.substr(1);
+            if(this[prop] !== otherSpec[prop]) return false;
+        }
+        return true;
+    }
+}
+
+//NEW = ENUM
+class Enum {
+    constructor(...values) {
+      const len = values.length;
+      for(let i = 0; i < len; ) this[values[i++]] = values[i++];
+      Object.freeze(this); // 얼려줘서 변경할수 없게 만든다.
+    }
+  }
+
+class Inventory{
+	constructor(){
+		this.guitars = [];
+	}
+	addGuitar(guitarArr, specArr){
+        const guitarSpec = new GuitarSpec(...specArr);
+		const guitar = new Guitar(...guitarArr, guitarSpec);
+		this.guitars.push(guitar);
+	}
+	getGuitar(serialNumber){
+		const k = this.guitars;
+		for(let i = 0; i < k.length; i++){
+			if(k[i].getSerialNumber() === serialNumber){
+				return k[i];
+			}			
+		}
+		return null;
+	}
+	search(guitarSpec){
+		const k = this.guitars;
+        const matchingGuitars = [];
+
+		for(let i = 0; i < k.length; i++){
+
+            if(k[i].getSpec().matches(guitarSpec))  matchingGuitars.push(k[i]);
+      		
+		}
+		return matchingGuitars;
+	}
+}
+
+// Enum 변수생성
+const Type = new Enum('ACOUSTIC','acoustic','ELECTRIC','electric');
+const Builder = new Enum('FENDER','Fender','MARTIN','Martin','GIBSON','Gibson');
+const Wood = new Enum('INDIAN_ROSEWOOD','Indian Rosewood','BRAZILIAN_ROSEWOOD', 'Brazilian Rosewood','ALDER','Alder');
+
+var guitars = new Inventory();
+
+// 테스트 하기 위한 초기 데이터 입력
+guitars.addGuitar( ["V95", 1499], [Builder.FENDER, "Stratocastor", Type.ELECTRIC, Wood.ALDER, Wood.ALDER, 12]);
+guitars.addGuitar(["V91", 1549], [Builder.FENDER, "Stratocastor", Type.ELECTRIC, Wood.ALDER, Wood.ALDER, 13]);
+
+// 고객이 원하는 기타 입력
+const whatLikes = new GuitarSpec(Builder.FENDER, "Stratocastor", Type.ELECTRIC, Wood.ALDER, Wood.ALDER);
+
+// 검색
+const a1 = guitars.search(whatLikes);
+
+// 검색 결과 출력
+a1.forEach(o=>{
+  console.log(`We have a ${o.getSpec().getBuilder()} ${o.getSpec().getModel()}  ${o.getSpec().getType()} guitar`);
+  console.log(`\t${o.getSpec().getBackWood()} back and sides,`);
+  console.log(`\t${o.getSpec().getTopWood()} top.`);
+  console.log(`You can have it for
+   only $${o.getPrice()}!!\n`);
+  console.log('====='.repeat(8));
+})
+</script>
+</html>
