@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name ="format-detection" content ="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TITLE</title>
+<link rel="stylesheet" type="text/css" href="common.css">
+</head>
+<body>
+<div id="wrap">	
+	
+</div>
+</body>
+<script type="text/javascript">
+class DogDoor{
+	constructor(){
+		this._open = false;
+	}
+
+	open(){
+		console.log('The dog door opens.');
+		this._open = true;
+	}
+	close(){
+		console.log('The dog door closes');
+		this._open = false;
+	}
+
+	isOpen(){
+		return this._open;
+	}
+}
+
+class Remote{
+	constructor(door){
+        this._door = door;
+        this.timer = null;
+	}
+
+	pressButton(){
+		console.log('Pressing the remote control button...');
+		if(door.isOpen()){
+			door.close();
+		}else{
+			door.open();
+
+			if(this.timer) clearTimeout(this.timer);
+			this.timer = setTimeout(()=>{
+				if(door.isOpen()) door.close();
+			}, 5000);
+		}
+	}
+}
+
+//실행
+var door = new DogDoor();
+var remote = new Remote(door);
+
+console.log('Fido barks to go outside...');
+remote.pressButton();
+console.log('\nFido has gon outside...');
+console.log("\nFido's all done...");
+//console.log("\nFido's back inside...");
+
+//대체경로
+setTimeout(()=>{
+    console.log("...but he's stuck outside");
+    console.log("\n Fido starts barking...");
+    console.log("...so Gina grabs the remote control");
+    remote.pressButton();
+    console.log("\nFido's back inside...");
+
+},1000);
+</script>
+</html>
