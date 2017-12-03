@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name ="format-detection" content ="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TITLE</title>
+</head>
+<body>
+<div id="wrap">	
+	
+</div>
+</body>
+<script type="text/javascript">
+class DogDoor{
+	constructor(setTime){
+		this._open = false;
+        this.timer = null;  //new: 자동으로 닫히는것을 door에서!
+		this.time = setTime || 5000;
+	}
+
+	open(){
+		console.log('The dog door opens.');
+		this._open = true;
+
+        //new: 자동으로 닫히는것을 door에서!
+        this.timer = setTimeout(()=>{
+            if(this.isOpen()) this.close();
+            clearTimeout(this.timer);
+        }, this.time);
+
+	}
+	close(){
+		console.log('The dog door closes');
+		this._open = false;
+	}
+
+	isOpen(){
+		return this._open;
+	}
+}
+
+/* BarkRecognizer */
+class BarkRecognizer{
+	constructor(door){		
+		this.door = door;
+	}
+	recognize(barking){
+		console.log("BarkRecognizer : Heard a '"+barking+ "'");
+		door.open();
+	}
+}
+class Remote{
+	constructor(door){
+        this._door = door;
+        // this.timer = null;
+	}
+
+	pressButton(){
+		console.log('Pressing the remote control button...');
+		if(door.isOpen()){
+			door.close();
+		}else{
+			door.open();
+
+			// if(this.timer) clearTimeout(this.timer);
+			// this.timer = setTimeout(()=>{
+			// 	if(door.isOpen()) door.close();
+			// }, 5000);
+		}
+	}
+}
+//sleep
+function sleep(time){
+	const t1 = new Date().getTime() + time;
+
+	do{
+		var t2 = new Date().getTime();
+	}while(t2 < t1)
+}
+
+//실행 // DogDoorSimulator 
+
+var setTime = 5000;
+var door = new DogDoor(setTime);
+var recognizer = new BarkRecognizer(door);
+var remote = new Remote(door);
+
+console.log("Fido starts barking.");
+recognizer.recognize("Woof");
+console.log("Rido has gone outside...");
+console.log("Fido's all done...");
+console.log("............................................................................");
+sleep(5000);
+console.log("...but he's stuck outside!");
+
+console.log("Fido starts barking.");
+recognizer.recognize("Woof");
+
+console.log("Fido's back inside.")
+
+</script>
+</html>
